@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "CatalogoItem": {
+      "title": "CatalogoItem",
+      "description": "Item ou serviço comercial do catálogo com preços de referência para propostas",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nome": { "type": "string", "maxLength": 200 },
+        "descricao": { "type": "string", "maxLength": 1000 },
+        "unidade": { "type": "string", "enum": ["unidade", "hora", "pacote"] },
+        "precoUnitario": { "type": "number", "description": "Preço unitário em cêntimos de euro (EUR)" },
+        "moeda": { "type": "string", "enum": ["EUR"] },
+        "ativo": { "type": "boolean" },
+        "condicoes": { "type": "string", "maxLength": 1000 },
+        "isDemonstracao": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "nome", "descricao", "unidade", "precoUnitario", "moeda", "ativo"]
+    },
+    "Pedido": {
+      "title": "Pedido",
+      "description": "Registo de pedido de proposta submetido pelo formulário público",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nome": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "format": "email", "maxLength": 150 },
+        "pedidoOriginal": { "type": "string", "maxLength": 5000 },
+        "status": {
+          "type": "string",
+          "enum": ["Recebido", "Em análise", "Necessita de revisão", "Proposta criada", "Erro"]
+        },
+        "interpretacaoIA": { "type": "object" },
+        "informacaoEmFalta": { "type": "array" },
+        "motivoRevisao": { "type": "string" },
+        "propostaId": { "type": "string" },
+        "erroProcessamento": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "nome", "email", "pedidoOriginal", "status", "createdAt"]
+    },
+    "Proposta": {
+      "title": "Proposta",
+      "description": "Proposta comercial formal calculada com base no catálogo e pedido",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "numeroProposta": { "type": "string" },
+        "pedidoId": { "type": "string" },
+        "resumoAmbito": { "type": "string", "maxLength": 2000 },
+        "itens": { "type": "array" },
+        "total": { "type": "number", "description": "Total sem IVA em cêntimos EUR" },
+        "condicoes": { "type": "string", "maxLength": 2000 },
+        "token": { "type": "string", "maxLength": 128 },
+        "link": { "type": "string" },
+        "estadoNotificacao": {
+          "type": "string",
+          "enum": ["Por enviar", "Aceite pelo serviço", "Falhou", "Não configurado"]
+        },
+        "notificacaoResendId": { "type": "string" },
+        "notificacaoTentativaEm": { "type": "string" },
+        "notificacaoErro": { "type": "string" },
+        "isDemonstracao": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "validade": { "type": "string" }
+      },
+      "required": ["id", "numeroProposta", "pedidoId", "itens", "total", "token", "estadoNotificacao", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/catalogo/{itemId}": {
+      "schema": "CatalogoItem",
+      "description": "Knowledge Base comercial com produtos, serviços e preços"
+    },
+    "/pedidos/{pedidoId}": {
+      "schema": "Pedido",
+      "description": "Pedidos de proposta enviados pelos clientes"
+    },
+    "/propostas/{propostaId}": {
+      "schema": "Proposta",
+      "description": "Propostas comerciais emitidas e calculadas"
+    }
+  }
+}

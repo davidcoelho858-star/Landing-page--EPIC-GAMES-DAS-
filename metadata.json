@@ -1,0 +1,6 @@
+{
+  "name": "Epic Games Store — High-Conversion Storefront Landing Page",
+  "description": "A modern, conversion-optimized landing page featuring an AI Chatbot powered by Gemini 3.8 Flash, meeting scheduling integrated with Google Calendar, dynamic hero carousels, offer stacking, live scarcity countdowns, target personas, interactive discovery grid, and comprehensive FAQs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

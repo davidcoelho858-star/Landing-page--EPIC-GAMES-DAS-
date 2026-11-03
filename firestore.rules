@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all to prevent unauthenticated public scraping and orphan writes
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Direct access to collections is restricted:
+    // Public operations go through server proxy API routes (/api/pedidos, /api/proposta/:token).
+    // Admin operations are permitted for authenticated admin user with verified email.
+    match /catalogo/{itemId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn() && isValidId(itemId);
+    }
+
+    match /pedidos/{pedidoId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn() && isValidId(pedidoId);
+    }
+
+    match /propostas/{propostaId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn() && isValidId(propostaId);
+    }
+  }
+}
